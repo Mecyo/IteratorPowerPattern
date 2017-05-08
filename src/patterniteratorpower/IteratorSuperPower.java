@@ -3,6 +3,7 @@ package patterniteratorpower;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,80 +13,88 @@ import java.util.logging.Logger;
  */
 public class IteratorSuperPower {
     
-    private Collection lista;
+    private List lista;
     private String atributo;
     private String verificador;
-    private Object valor;
-    private Object next;
+    private Integer valor;
+    private Integer next;
+    private Method method;
 
     
-    public IteratorSuperPower(Collection lista, String atributo, String verificador, Object valor) {
+    public IteratorSuperPower(List lista, String atributo, String verificador, Integer valor) {
         this.lista = lista;
         this.atributo = converteAtributo(atributo);
         this.verificador = verificador;
         this.valor = valor;
+        this.next = 0;
+        this.method = retornaMetodo();
+    }
+    
+    private Method retornaMetodo() {
+        Method met = null;
+        try {
+            met = this.lista.get(0).getClass().getMethod(this.atributo);
+        } catch (NoSuchMethodException | SecurityException ex) {
+            Logger.getLogger(IteratorSuperPower.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return met;
     }
     
     public boolean hasNext() {
-        if(this.lista != null) {
-            for (Object object : this.lista) {
-                if(verificaCondicao(object)) {
-                    next = object;
-                    return true;
-                } 
-            }
-        }
+        if(this.lista != null) 
+            return executaBusca();
+        
         return false;
     }
     
     public Object next() {
-        return this.next;
+        return this.lista.get(next++);
     }
     
-    private boolean verificaCondicao(Object object) {
-        switch(verificador) {
-            case ">": object.break;
-            case "<":break;
-            case "==":break;
-            case "!=":break;
-            default: return false;
-        }
+    private boolean executaBusca() {
+        
+            for (int i = next; i < this.lista.size(); i++) {
+                Object object = this.lista.get(i);
+
+                try {
+                    if(method != null) {
+                        if(this.verificador.equals(">")) {
+                            Integer result = (Integer) this.method.invoke(object);
+                            if(result > this.valor) {
+                                next = i;
+                                return true;
+                            }
+                        } 
+                        if(this.verificador.equals("<")) {
+                            Integer result = (Integer) this.method.invoke(object);
+                            if(result < this.valor) {
+                                next = i;
+                                return true;
+                            }
+                        }
+                        if(this.verificador.equals("==")) {
+                            Integer result = (Integer) this.method.invoke(object);
+                            if(result == this.valor) {
+                                next = i;
+                                return true;
+                            }
+                        }
+                        if(this.verificador.equals("!=")) {
+                            Integer result = (Integer) this.method.invoke(object);
+                            if(result != this.valor) {
+                                next = i;
+                                return true;
+                            }
+                        }
+                    }
+                } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {  }
+            }
+        
+        return false;
     }
-    
-    private boolean executaBusca(Object object, String verificador) {
-        
-        Method method = null;
-        try {
-            method = object.getClass().getMethod(this.atributo);
-        } catch (NoSuchMethodException | SecurityException ex) {
-            Logger.getLogger(IteratorSuperPower.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        try {
-            if(method != null) {
-                switch(verificador) {
-                    case ">": {
-                        Object result = method.invoke(object);
-                        if(this.valor < result)
-                            return false;
-                        else
-                            return true;
-                    } 
-                    case "<":break;
-                    case "==":break;
-                    case "!=":break;
-                    default: return false;
-                }
-                return method.invoke();
-                
-            }
-        } catch (IllegalArgumentException e) {  }
-          catch (IllegalAccessException e) {  }
-          catch (InvocationTargetException e) {  }
-            }
     
     private String converteAtributo(String atributo) {
-        String inicial = "get" + atributo.substring(0, 0).toLowerCase();
+        String inicial = "get" + atributo.substring(0, 1).toUpperCase();
         String fim = atributo.substring(1);
         
         return inicial + fim;

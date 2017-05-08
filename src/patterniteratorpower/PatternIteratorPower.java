@@ -17,16 +17,44 @@ public class PatternIteratorPower {
         List<Aluno> listaAlunos = new ArrayList<>();
         
         for (int i = 0; i < 20; i++) {
-            Aluno aluno = new Aluno("Nome" + i, Double.valueOf(i * 10), i * 7);
+            Aluno aluno = new Aluno("Nome" + i, i * 10, i * 7);
             listaAlunos.add(aluno);
         }
         
-        IteratorSuperPower iterator = new IteratorSuperPower(listaAlunos, "idade", ">", "20");
+//        System.out.println("Alunos com idade > 20:\n\n\n");
+//        IteratorSuperPower iterator = new IteratorSuperPower(listaAlunos, "idade", ">", 200);
+//        
+//        while(iterator.hasNext()) {
+//            Aluno aluno = (Aluno) iterator.next();
+//            System.out.println("Nome: " + aluno.getNome() + " - Altura: " + aluno.getAltura() + " - Idade: " + aluno.getIdade());
+//        }
+//        
+//        System.out.println("Alunos com idade < 20:\n\n\n");
+//        
+//        IteratorSuperPower iterator2 = new IteratorSuperPower(listaAlunos, "idade", "<", 10);
+//        
+//        while(iterator2.hasNext()) {
+//            Aluno aluno = (Aluno) iterator2.next();
+//            System.out.println("Nome: " + aluno.getNome() + " - Altura: " + aluno.getAltura() + " - Idade: " + aluno.getIdade());
+//        }
         
-        while(iterator.hasNext()) {
-            Aluno aluno = (Aluno) iterator.next();
+        System.out.println("Alunos com idade == 20:\n\n\n");
+        
+        IteratorSuperPower iterator3 = new IteratorSuperPower(listaAlunos, "idade", "!=", 14);
+        
+        while(iterator3.hasNext()) {
+            Aluno aluno = (Aluno) iterator3.next();
             System.out.println("Nome: " + aluno.getNome() + " - Altura: " + aluno.getAltura() + " - Idade: " + aluno.getIdade());
         }
+        
+//        System.out.println("Alunos com idade != 20:\n\n\n");
+//        
+//        IteratorSuperPower iterator4 = new IteratorSuperPower(listaAlunos, "idade", "!=", 10);
+//        
+//        while(iterator4.hasNext()) {
+//            Aluno aluno = (Aluno) iterator4.next();
+//            System.out.println("Nome: " + aluno.getNome() + " - Altura: " + aluno.getAltura() + " - Idade: " + aluno.getIdade());
+//        }
         
     }
     
